@@ -8,7 +8,71 @@
     <link rel="stylesheet" type="text/css" href="./css/style.css" />    
 </head>
 <body>
+
+    <div class="container">
+
+        <div class="card text-white bg-success mb-3 text-center col-10" style="max-width: 960px;" id="scheduler-header">
+            <div class="card-body">
+                <h1 class="card-title">Anytime is Train Time</h1>
+                <p class="card-text">Choo Choo. Chee Chee.</p>
+            </div>
+            </div>
     
+        <div class="card border-info text-white mb-3" style="max-width: 960px;">
+            <div class="card-header bg-info card-header-style">Current Train Schedule</div>
+                <div class="card-body text-info">
+                    <table class="table table-hover">
+                        <thead id="current-train-thead">
+                            <tr>
+                                <th scope="col">Train Name</th>
+                                <th scope="col">Destination</th>
+                                <th scope="col">Frequency (min)</th>
+                                <th scope="col">Next Arrival</th>
+                                <th scope="col">Minutes Away</th>
+                            </tr>
+                        </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="train-name">Trenton Express</th>
+                                    <td class="train-destination">Trenton</td>
+                                    <td class="train-frequency">25</td>
+                                    <td class="next-arrival"></td>
+                                    <td class="away-time"></td>
+                                </tr>
+                            </tbody>
+                    </table>
+                </div>
+        </div>
+
+        <div class="card border-info text-white mb-3" style="max-width: 960px;">
+                <div class="card-header bg-info card-header-style">Add Train</div>
+                    <div class="card-body text-dark">
+                        <form id="add-train-form">
+                            <div class="form-group">
+                                <label for="train-name">Train Name</label>
+                                    <input type="text" class="form-control border-info" id="train-name-input" placeholder="What's the name of the train?">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="train-destination">Destination</label>
+                                    <input type="text" class="form-control border-info" id="train-destination-input" placeholder="Where this train going?">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="first-train-time">First Train Time (HH:mm - military time)</label>
+                                    <input type="text" class="form-control border-info" id="first-train-time-input" placeholder="HH:mm">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="train-frequency">Frequency (min)</label>
+                                    <input type="text" class="form-control border-info" id="train-frequency-input" placeholder="min">
+                            </div>
+
+                            <button type="submit" class="btn btn-info">Submit</button>
+                        </form>
+                    </div>
+        </div>
+    </div>    
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>    
