@@ -92,7 +92,7 @@ database.ref().on("child_added", function(childSnapshot) {
     console.log("Minutes Till Next Train: " + minuteTillNext);
 
     // Next train time
-    var nextTrain = moment().add(minuteTillNext, "minutes");
+    var nextTrain = (moment().add(minuteTillNext, "minutes")).format("hh:mm A");
     console.log("Arrival Time: " + moment(nextTrain).format("hh:mm"));
 
     // Create the new row
