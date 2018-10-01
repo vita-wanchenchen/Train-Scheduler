@@ -1,6 +1,6 @@
 # Train-Scheduler
 
-Train scheduler build with HTML, Bootstrap, CSS, jQuery, Moment.js and Firebase for the database.
+Train scheduler build with HTML, Bootstrap, CSS, jQuery, Moment.js and Firebase.
 
 ## How to use the scheduler
 

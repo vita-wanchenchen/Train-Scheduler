@@ -25,6 +25,25 @@ $("#add-train-btn").on("click", function(event) {
     var trainDest = $("#train-destination-input").val().trim();
     var firstTrain = moment($("#first-train-time-input").val().trim(), "HH:mm").format("X");
     var trainFreq = $("#train-frequency-input").val().trim();
+    
+    // Checking for invalid user enter
+    // User didn't fill every input
+    if (trainName == "" || trainDest == "" || firstTrain == "" || trainFreq == "" ) {
+        $("#message").text("Please complete the form!");
+        return;
+    }
+
+    // User didn't put number at train frquency
+    if (isNaN(trainFreq)) {
+        $("#message").text("Please enter a number for frequency.");
+        return;
+    }
+
+   // User didn't enter valid format for the first train time
+   if (firstTrain == "Invalid date") {
+   $("#message").text("Please enter military time for the First Train.");
+   return;
+    }
 
     // Create object for holding employee data
     var newTrain = {
@@ -37,12 +56,6 @@ $("#add-train-btn").on("click", function(event) {
     // Upload new train data to the database
     database.ref().push(newTrain);
 
-    // Logs everything to console
-    console.log(newTrain.name);
-    console.log(newTrain.destination);
-    console.log(newTrain.start);
-    console.log(newTrain.frequency);
-
     $("#message").text("New train sucessfully added");
 
     // Clear the form input
@@ -52,58 +65,65 @@ $("#add-train-btn").on("click", function(event) {
     $("#train-frequency-input").val("");
 });
 
+//Display the current train table
+function display() {
+
+    // Clear the train table
+    $("#train-list-table > tbody").empty();
+
 // Create Firebase event for adding new train to the database
 // Add a row in the html when user adds an entry
-database.ref().on("child_added", function(childSnapshot) {
+    database.ref().on("child_added", function(childSnapshot) {
 
-    // Store everything into a variable.
-    var trainName = childSnapshot.val().name;
-    var trainDest = childSnapshot.val().destination;
-    var firstTrain = childSnapshot.val().start;
-    var trainFreq = childSnapshot.val().frequency;
+        // Store everything into a variable.
+        var trainName = childSnapshot.val().name;
+        var trainDest = childSnapshot.val().destination;
+        var firstTrain = childSnapshot.val().start;
+        var trainFreq = childSnapshot.val().frequency;
 
-    // Train Info
-    console.log(trainName);
-    console.log(trainDest);
-    console.log(firstTrain);
-    console.log(trainFreq);
+        // Grab the key Firebase assigned
+        var key = childSnapshot.ref.key;
 
-    // Prettify the new train start
-    //var newTrainStartPretty = moment.unix(firstTrain).format("HH:mm");
+        // First train time
+        var firstTrainTimeConv = moment(firstTrain, "HH:mm").subtract(1,"years");
 
-    // First time
-    var firstTrainTimeConv = moment(firstTrain, "HH:mm").subtract(1,"years");
-    console.log(firstTrainTimeConv);
+        //Current Time
+        var currentTime = moment();
 
-    //Current Time
-    var currentTime = moment();
-    console.log("Current Time: " + moment(currentTime).format("hh:mm"));
+        // Difference between the times
+        var diffTime = currentTime.diff(firstTrainTimeConv, "minutes");
 
-    // Difference between the times
-    var diffTime = moment().diff(moment(firstTrainTimeConv), "minutes");
-    console.log("Difference in Time: " + diffTime);
+        // Time remainder
+        var timeRemainder = diffTime % trainFreq;
+        
+        // Minute untill next train come
+        var minuteTillNext = trainFreq - timeRemainder;
 
-    // Time remainder
-    var timeRemainder = diffTime % trainFreq;
-    console.log(timeRemainder);
-    
-    // Minute untill next train come
-    var minuteTillNext = trainFreq - timeRemainder;
-    console.log("Minutes Till Next Train: " + minuteTillNext);
+        // Next train time
+        var nextTrain = currentTime.add(minuteTillNext, "minutes").format("hh:mm A");
 
-    // Next train time
-    var nextTrain = (moment().add(minuteTillNext, "minutes")).format("hh:mm A");
-    console.log("Arrival Time: " + moment(nextTrain).format("hh:mm"));
+        var deleteBtn = $("<button class='delete btn btn-primary'>");
+        deleteBtn.attr("data-key", key).text("Delete");
 
-    // Create the new row
-    var newRow = $("<tr>").append(
-        $("<td>").text(trainName),
-        $("<td>").text(trainDest),
-        $("<td>").text(trainFreq),
-        $("<td>").text(nextTrain),
-        $("<td>").text(minuteTillNext)
-    );
+        // Create the new row
+        var newRow = $("<tr>").append(
+            $("<td>").text(trainName),
+            $("<td>").text(trainDest),
+            $("<td>").text(trainFreq),
+            $("<td>").text(nextTrain),
+            $("<td>").text(minuteTillNext),
+            $("<td>").append(deleteBtn)
+        );
 
-    // Append the new row to the table
-    $("#train-list-table > tbody").append(newRow);
-}) 
+        // Append the new row to the table
+        $("#train-list-table > tbody").append(newRow);
+    }) 
+}
+   $(document).on("click", ".delete", function() {
+    var key = $(this).attr("data-key");
+    database.ref(key).remove();
+    $(this).closest('tr').remove();
+   });
+
+   display();
+   setInterval(display, 1000*60);
