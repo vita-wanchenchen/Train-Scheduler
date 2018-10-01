@@ -17,3 +17,7 @@ p.card-text {
 label {
     font-weight: bold;
 }
+
+tbody {
+    text-transform: capitalize;
+}
